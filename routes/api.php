@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/tasks', 'API\TaskController@index');
+Route::post('/tasks', 'API\TaskController@store');
+Route::put('/tasks/{task}', 'API\TaskController@update');
+Route::delete('/tasks/{task}', 'API\TaskController@destroy');
