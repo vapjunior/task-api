@@ -22,7 +22,7 @@ class TaskController extends Controller
         $code = 200;
         $response['success'] = true;
         $response['data'] = $tasks;
-        $response['message'] = 'Tasks retrivied successfully';
+        $response['message'] = 'Tarefas recuperadas com sucesso';
 
         return response()->json($response, $code);
     }
@@ -35,18 +35,32 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $data = $request->all();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Task  $task
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Task $task)
-    {
-        //
+        $validator = Validator::make($data, [
+            'name' => 'required',
+            'description' => 'required|max:255',
+            'priority' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            
+            $code = 404;
+            $response['success'] = false;
+            $response['data'] = $validator->errors();
+            $response['message'] = 'Error ao cadastrar tarefa';
+
+            return response()->json($response, $code);
+        }
+
+        $task = Task::create($data);
+
+        $code = 201;
+        $response['success'] = true;
+        $response['data'] = $task;
+        $response['message'] = 'Tarefa cadastrada com sucesso';
+
+        return response()->json($response, $code);
     }
 
     /**
@@ -58,7 +72,30 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'name' => 'required',
+            'description' => 'required|max:255',
+            'priority' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            
+            $code = 404;
+            $response['success'] = false;
+            $response['data'] = $validator->errors();
+            $response['message'] = 'Error ao atualizar tarefa';
+
+            return response()->json($response, $code);
+        }
+
+        $task->update($data);
+
+        $code = 204;
+        $response = null;
+
+        return response()->json($response, $code);
     }
 
     /**
@@ -69,6 +106,11 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        
+        $code = 204;
+        $response = null;
+
+        return response()->json($response, $code);
     }
 }
